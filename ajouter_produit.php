@@ -16,37 +16,29 @@ include 'include/nav.php' ?>
         $prix = $_POST["prix"];
         $description = $_POST["description"];
         $categorie = $_POST["categorie"];
-        $mainImageFilename = 'default.png';
 
-        if (!empty($_FILES['images']['name'][0])) {
-            $firstImageName = $_FILES['images']['name'][0];
-            $tmp_name = $_FILES['images']['tmp_name'][0];
-            $mainImageFilename = uniqid() . '_' . basename($firstImageName);
-            $destination = 'upload/produit/' . $mainImageFilename;
-            move_uploaded_file($tmp_name, $destination);
-        }
-
-    
         if (!empty($lebelle) && !empty($prix) && !empty($categorie)) {
-            $sqlState = $pdo->prepare('INSERT INTO produit (lebelle, description, prix, image, id_categorie) VALUES(?,?,?,?,?)');
-            $inserted = $sqlState->execute([$lebelle, $description, $prix, $mainImageFilename, $categorie]);
+            $sqlState = $pdo->prepare('INSERT INTO produit (lebelle, description, prix, id_categorie) VALUES(?,?,?,?)');
+            $inserted = $sqlState->execute([$lebelle, $description, $prix, $categorie]);
             
-    
             if ($inserted) {
                 $produit_id = $pdo->lastInsertId();
     
-              
-                foreach ($_FILES['images']['name'] as $key => $name) {
-                    if (!empty($name)) {
-                        $tmp_name = $_FILES['images']['tmp_name'][$key];
-                        $unique_name = uniqid() . '_' . basename($name);
-                        $destination = 'upload/produit/' . $unique_name;
-                        move_uploaded_file($tmp_name, $destination);
-                
-                        $stmt = $pdo->prepare('INSERT INTO produit_image (produit_id, image_path) VALUES (?, ?)');
-                        $stmt->execute([$produit_id, $unique_name]);
+            
+                if (!empty($_FILES['images']['name'][0])) {
+                    foreach ($_FILES['images']['name'] as $key => $name) {
+                        if (!empty($name)) {
+                            $tmp_name = $_FILES['images']['tmp_name'][$key];
+                            $unique_name = uniqid() . '_' . basename($name);
+                            $destination = 'upload/produit/' . $unique_name;
+                            
+                            if (move_uploaded_file($tmp_name, $destination)) {
+                                $stmt = $pdo->prepare('INSERT INTO produit_image (produit_id, image_path) VALUES (?, ?)');
+                                $stmt->execute([$produit_id, $unique_name]);
+                            }
+                        }
                     }
-                }                
+                }
     
                 header('Location: produits.php');
             } else {
@@ -56,27 +48,25 @@ include 'include/nav.php' ?>
             echo '<div class="alert alert-danger">Libellé, prix et catégorie sont obligatoires.</div>';
         }
     }
-    
     ?>
     <form method="post" enctype="multipart/form-data">
-        <label class="form-label">lebelle</label>
-        <input type="text" class="form-control" name="lebelle" required >
+        <label class="form-label">Libellé</label>
+        <input type="text" class="form-control" name="lebelle" required>
 
         <label class="form-label">Prix</label>
-        <input type="number" class="form-control" name="prix" min="0" required >
+        <input type="number" class="form-control" name="prix" min="0" required>
 
-        <label class="form-label">Description</label required >
+        <label class="form-label">Description</label>
         <textarea class="form-control" name="description"></textarea>
 
         <label class="form-label">Images</label>
-        <input type="file" class="form-control" name="images[]" multiple>
-
+        <input type="file" class="form-control" name="images[]" multiple accept="image/*">
 
         <?php
         $categories = $pdo->query('SELECT * FROM categorie')->fetchAll(PDO::FETCH_ASSOC);
         ?>
         <label class="form-label">Catégorie</label>
-        <select name="categorie" class="form-control" required >
+        <select name="categorie" class="form-control" required>
             <option value="">Choisissez une catégorie</option>
             <?php
             foreach ($categories as $categorie) {
