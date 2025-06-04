@@ -22,14 +22,14 @@ include 'include/nav.php' ?>
             $firstImageName = $_FILES['images']['name'][0];
             $tmp_name = $_FILES['images']['tmp_name'][0];
             $mainImageFilename = uniqid() . '_' . basename($firstImageName);
-            $destination = 'upload/produit/' . $mainImageFilename;
+            $destination = 'upload/produit' . $mainImageFilename;
             move_uploaded_file($tmp_name, $destination);
         }
 
     
-        if (!empty($lebelle) && !empty($prix) && !empty($categorie)) {
-            $sqlState = $pdo->prepare('INSERT INTO produit (lebelle, description, prix, image, id_categorie) VALUES(?,?,?,?,?)');
-            $inserted = $sqlState->execute([$lebelle, $description, $prix, $mainImageFilename, $categorie]);
+        if (!empty($lebelle) && !empty($prix) && !empty($categorie) && !empty($mainImageFilename)) {
+            $sqlState = $pdo->prepare('INSERT INTO produit (lebelle, description, prix,image, id_categorie) VALUES(?,?,?,?,?)');
+            $inserted = $sqlState->execute([$lebelle, $description, $prix,$mainImageFilename,$categorie]);
             
     
             if ($inserted) {
@@ -55,7 +55,7 @@ include 'include/nav.php' ?>
         } else {
             echo '<div class="alert alert-danger">Libellé, prix et catégorie sont obligatoires.</div>';
         }
-    }
+}
     
     ?>
     <form method="post" enctype="multipart/form-data">
@@ -76,7 +76,7 @@ include 'include/nav.php' ?>
         $categories = $pdo->query('SELECT * FROM categorie')->fetchAll(PDO::FETCH_ASSOC);
         ?>
         <label class="form-label">Catégorie</label>
-        <select name="categorie" class="form-control" required >
+        <select name="categorie" class="form-control" required > 
             <option value="">Choisissez une catégorie</option>
             <?php
             foreach ($categories as $categorie) {
