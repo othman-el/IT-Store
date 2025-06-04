@@ -76,7 +76,7 @@ include 'include/nav.php' ?>
         $categories = $pdo->query('SELECT * FROM categorie')->fetchAll(PDO::FETCH_ASSOC);
         ?>
         <label class="form-label">Catégorie</label>
-        <select name="categorie" class="form-control" required > 
+        <select name="categorie" class="form-control" required >
             <option value="">Choisissez une catégorie</option>
             <?php
             foreach ($categories as $categorie) {
