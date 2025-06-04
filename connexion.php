@@ -40,10 +40,10 @@
     <h4>Connexion</h4>
     <form method="post">
         <label class="form-label">Login</label>
-        <input type="text" class="form-control" name="login">
+        <input type="text" class="form-control" name="login" required>
 
         <label class="form-label">Password</label>
-        <input type="password" class="form-control" name="password">
+        <input type="password" class="form-control" name="password" required >
 
         <input type="submit" value="Connexion" class="btn btn-primary my-2" name="connexion">
     </form>
