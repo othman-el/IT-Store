@@ -34,32 +34,18 @@ $produit = $sqlState->fetch(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-md-6">
                 <?php
-                        $stmt = $pdo->prepare("SELECT
-                        produit.image AS produit_image,
-                        produit_image.image_path AS image_path
-                    FROM 
-                        produit
-                    INNER JOIN 
-                        produit_image ON produit.id = produit_image.produit_id
-                    WHERE
-                        produit.id = ?");
+                    $stmt = $pdo->prepare("SELECT image_path FROM produit_image WHERE produit_id = ?");
                     $stmt->execute([$produit['id']]);
                     $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
 
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
-                        <?php if (!empty($images)): ?>
                             <?php foreach ($images as $img): ?>
                                 <div class="swiper-slide">
                                     <img src="../upload/produit/<?= htmlspecialchars($img['image_path']) ?>" alt="image produit">
                                 </div>
                             <?php endforeach; ?>
-                        <?php else: ?>
-                            <div class="swiper-slide">
-                                <img src="../upload/produit/<?= htmlspecialchars($produit['image']) ?>" alt="image produit">
-                            </div>
-                        <?php endif; ?>
                     </div>
                     <!-- Navigation buttons -->
                     <div class="swiper-button-next"></div>
@@ -77,11 +63,6 @@ $produit = $sqlState->fetch(PDO::FETCH_ASSOC);
                 <hr>
                 <div class="d-flex">
                     <h5 class="mx-1">
-                        <span class="badge text-bg-danger">
-                            <?php echo $produit['prix'] ?> <i class="fa fa-solid fa-dollar"></i>
-                        </span>
-                    </h5>
-                    <h5>
                         <span class="badge text-bg-success">
                             <?php echo $produit['prix'] ?> <i class="fa fa-solid fa-dollar"></i>
                         </span>

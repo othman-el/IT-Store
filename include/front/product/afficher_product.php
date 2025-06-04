@@ -2,14 +2,13 @@
 foreach ($produits as $produit) {
     $idProduit = $produit->id;
 
-    // Fetch all images for this product
     $stmt = $pdo->prepare("SELECT image_path FROM produit_image WHERE produit_id = ?");
     $stmt->execute([$idProduit]);
     $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
     ?>
     <div class="col-md-6 mb-4">
         <div class="card h-100">
-            <!-- Carousel Slider -->
+           
             <div id="carousel<?= $idProduit ?>" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     <?php if (!empty($images)): ?>
@@ -35,7 +34,7 @@ foreach ($produits as $produit) {
                 <?php endif; ?>
             </div>
 
-            <!-- Product Details -->
+           
             <div class="card-body">
                 <a href="produit.php?id=<?= $idProduit ?>" class="btn stretched-link"></a>
                 <h5 class="card-title"><?= htmlspecialchars($produit->lebelle) ?></h5>
