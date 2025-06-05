@@ -57,10 +57,10 @@ include 'include/nav.php' ?>
         <input type="number" class="form-control" name="prix" min="0" required>
 
         <label class="form-label">Description</label>
-        <textarea class="form-control" name="description"></textarea>
+        <textarea class="form-control" name="description"></textarea required >
 
         <label class="form-label">Images</label>
-        <input type="file" class="form-control" name="images[]" multiple accept="image/*">
+        <input type="file" class="form-control" name="images[]" multiple accept="image/*" required >
 
         <?php
         $categories = $pdo->query('SELECT * FROM categorie')->fetchAll(PDO::FETCH_ASSOC);
